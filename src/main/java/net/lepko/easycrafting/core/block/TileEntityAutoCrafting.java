@@ -241,18 +241,32 @@ public class TileEntityAutoCrafting extends TileEntity implements ISidedInventor
                 FMLCommonHandler.instance().firePlayerCraftingEvent(fakePlayer, result, craftingGrid);
                 result.onCrafting(worldObj, fakePlayer, result.stackSize);
 
-                for (StackReference ref : refs) {
-                    if (ref != null) {
-                        ItemStack stack = ref.decreaseStackSize(1);
-                        if (stack != null && stack.getItem() != null && stack.getItem().hasContainerItem(stack)) {
-                            ItemStack container = stack.getItem().getContainerItem(stack);
-                            if (container.isItemStackDamageable() && container.getItemDamage() > container.getMaxDamage()) {
+                for (int i=0; i<9; i++) {
+                    StackReference ref = refs[i];                             if (ref       == null) continue;
+                    ItemStack stack = ref.decreaseStackSize(1);               if (stack     == null) continue;
+                    Item stackItem = stack.getItem();                         if (stackItem == null) continue;
+                    ItemStack container = stackItem.getContainerItem(stack);  if (container == null) continue;
+                    if (container.isItemStackDamageable() && container.getItemDamage() > container.getMaxDamage())
+                        continue;
+
+                    // attempt to let the ingredient remain in its slot?
+                    if (! stackItem.doesContainerItemLeaveCraftingGrid(stack)) {
+                        ItemStack actualStack = getStackInSlot(ref.slot);
+
+                        if (actualStack == null || actualStack.stackSize == 0) { // slot is now empty, so just put container stack there
+                            setInventorySlotContents(ref.slot, container);
+                            container = null;
+                        } else {
+                            // if we can't put it back in the same slot, try to shove it somewhere in inputs
+                            if (container != null && InventoryUtils.addItemToInventory(this, container.copy(), 10, 18))
                                 container = null;
-                            }
-                            if (container != null && !InventoryUtils.addItemToInventory(this, container, 18, 26)) {
-                                InventoryUtils.dropItem(worldObj, xCoord + 0.5, yCoord + 1, zCoord + 0.5, container);
-                                // XXX: try other inventories
-                            }
+                        }
+                    }
+
+                    if (container != null) {
+                        if (!InventoryUtils.addItemToInventory(this, container.copy(), 18, 26)) {
+                            InventoryUtils.dropItem(worldObj, xCoord + 0.5, yCoord + 1, zCoord + 0.5, container);
+                            // XXX: try other inventories?
                         }
                     }
                 }
