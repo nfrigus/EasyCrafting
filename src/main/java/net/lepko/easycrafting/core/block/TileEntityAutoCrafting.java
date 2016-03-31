@@ -182,17 +182,20 @@ public class TileEntityAutoCrafting extends TileEntity implements ISidedInventor
         List<ItemStack> inputsCounted = new ArrayList<ItemStack>(9);
 
         for (int gridSlot = 0; gridSlot < 9; gridSlot++) {
-            if (! found[gridSlot]) {
-                ItemStack test = ItemStack.copyItemStack(getStackInSlot(gridSlot));
+            ItemStack test = ItemStack.copyItemStack(getStackInSlot(gridSlot));
+            if (test != null) {
                 test.stackSize = 1;
 
-                alreadyReserved: { // make sure it's a *unique* missing ingredient
+                alreadyReserved: { // make sure it's a *unique* ingredient
                     for (ItemStack x : inputsCounted) {
                         if (ItemStack.areItemStacksEqual(x, test))
                             break alreadyReserved;
                     }
 
-                    inputsNeeded.add(gridSlot);
+                    if (! found[gridSlot]) {
+                        inputsNeeded.add(gridSlot);
+                    }
+
                     inputsCounted.add(test);
                 }
             }
