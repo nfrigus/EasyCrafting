@@ -180,11 +180,14 @@ public class TileEntityAutoCrafting extends TileEntity implements ISidedInventor
 
         inputsNeeded.clear();
         List<ItemStack> inputsCounted = new ArrayList<ItemStack>(9);
+        boolean canCraft = true;
 
         for (int gridSlot = 0; gridSlot < 9; gridSlot++) {
             ItemStack test = ItemStack.copyItemStack(getStackInSlot(gridSlot));
             if (test != null) {
                 test.stackSize = 1;
+
+                canCraft = canCraft && found[gridSlot];
 
                 alreadyReserved: { // make sure it's a *unique* ingredient
                     for (ItemStack x : inputsCounted) {
@@ -201,7 +204,7 @@ public class TileEntityAutoCrafting extends TileEntity implements ISidedInventor
             }
         }
 
-        if (inputsNeeded.size() == 0) {
+        if (canCraft) {
             inputRestricted = false; // no restrictions if we already have all needed inputs
             return refs;
         } else {
