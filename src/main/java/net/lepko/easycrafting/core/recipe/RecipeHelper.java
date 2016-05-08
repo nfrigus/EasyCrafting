@@ -406,16 +406,14 @@ public class RecipeHelper {
 	 * @author planetguy
 	 *
 	 */
-	private static class OreDictionaryCheck {
-		
-		private Set<Integer> set=new HashSet();
+	private static class OreDictionaryCheck extends HashSet<Integer> {
 		
 		public void addInt(int i){
-			set.add(i);
+			add(i);
 		}
 		
 		public boolean bigEnough(){
-			return set.size() != 0;
+			return size() != 0;
 		}
 		
 		public boolean equals(Object o){
@@ -427,8 +425,8 @@ public class RecipeHelper {
 		
 		//Abuses equals() a bit
 		public boolean equals(OreDictionaryCheck c){
-			for(Integer i:set){
-				if(c.set.contains(i))
+			for(Integer i:this){
+				if(c.contains(i))
 					return true;
 			}
 			return false;
