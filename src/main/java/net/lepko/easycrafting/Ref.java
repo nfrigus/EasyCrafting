@@ -1,9 +1,11 @@
 package net.lepko.easycrafting;
 
 import com.mojang.authlib.GameProfile;
-import cpw.mods.fml.common.Loader;
-import cpw.mods.fml.common.SidedProxy;
+import net.minecraftforge.fml.common.Loader;
+import net.minecraftforge.fml.common.SidedProxy;
 import net.lepko.easycrafting.core.proxy.Proxy;
+import net.lepko.easycrafting.core.proxy.ProxyClient;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -14,7 +16,7 @@ public final class Ref {
 
     private Ref() {}
 
-    public static final String MOD_ID = "EasyCrafting";
+    public static final String MOD_ID = "easycrafting";
     public static final String RES_DOMAIN = MOD_ID.toLowerCase(Locale.ENGLISH);
     public static final String RES_PREFIX = String.format(Locale.ENGLISH, "%s:", RES_DOMAIN);
     public static final String CHANNEL = RES_DOMAIN;
@@ -26,7 +28,8 @@ public final class Ref {
     public static String URL;
 
     @SidedProxy(clientSide = "net.lepko.easycrafting.core.proxy.ProxyClient", serverSide = "net.lepko.easycrafting.core.proxy.Proxy")
-    public static Proxy PROXY;
+    //TODO do this right
+    public static Proxy PROXY=new ProxyClient();
 
     public static GameProfile GAME_PROFILE = new GameProfile(UUID.nameUUIDFromBytes("easycrafting.fake.player.profile".getBytes()), "[" + Ref.MOD_ID + "]");
 

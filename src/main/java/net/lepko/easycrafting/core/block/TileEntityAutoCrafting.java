@@ -1,6 +1,6 @@
 package net.lepko.easycrafting.core.block;
 
-import cpw.mods.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.lepko.easycrafting.Ref;
 import net.lepko.easycrafting.core.inventory.ContainerAutoCrafting;
 import net.lepko.easycrafting.core.inventory.gui.GuiAutoCrafting;
@@ -18,6 +18,8 @@ import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.ITickable;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.FakePlayer;
@@ -25,7 +27,7 @@ import net.minecraftforge.common.util.FakePlayerFactory;
 
 import java.util.*;
 
-public class TileEntityAutoCrafting extends TileEntity implements ISidedInventory, IGuiTile {
+public class TileEntityAutoCrafting extends TileEntity implements ITickable, ISidedInventory, IGuiTile {
 
     private static class FakeContainer extends Container {
         private FakeContainer() {
@@ -253,6 +255,8 @@ public class TileEntityAutoCrafting extends TileEntity implements ISidedInventor
                         continue;
 
                     // attempt to let the ingredient remain in its slot?
+                    //TODO port properly?
+                    /*
                     if (! stackItem.doesContainerItemLeaveCraftingGrid(stack)) {
                         ItemStack actualStack = getStackInSlot(ref.slot);
 
@@ -265,10 +269,11 @@ public class TileEntityAutoCrafting extends TileEntity implements ISidedInventor
                                 container = null;
                         }
                     }
+                    */
 
                     if (container != null) {
                         if (!InventoryUtils.addItemToInventory(this, container.copy(), 18, 26)) {
-                            InventoryUtils.dropItem(worldObj, xCoord + 0.5, yCoord + 1, zCoord + 0.5, container);
+                            InventoryUtils.dropItem(worldObj, getPos().getX() + 0.5, getPos().getY() + 1, getPos().getZ() + 0.5, container);
                             // XXX: try other inventories?
                         }
                     }
@@ -294,10 +299,11 @@ public class TileEntityAutoCrafting extends TileEntity implements ISidedInventor
     }
 
     @Override
-    public void writeToNBT(NBTTagCompound tag) {
+    public NBTTagCompound writeToNBT(NBTTagCompound tag) {
         super.writeToNBT(tag);
         tag.setTag("Inventory", InventoryUtils.writeStacksToNBT(inventory));
         tag.setByte("Mode", (byte) mode.ordinal());
+        return tag;
     }
 
     @Override
@@ -307,14 +313,14 @@ public class TileEntityAutoCrafting extends TileEntity implements ISidedInventor
     }
 
     @Override
-    public void updateEntity() {
+    public void update() {
         if (scheduledRecipeCheck) {
             scheduledRecipeCheck = false;
             checkForRecipe();
         }
 
         poweredPrev = poweredNow;
-        poweredNow = worldObj.isBlockIndirectlyGettingPowered(xCoord, yCoord, zCoord);
+        poweredNow = worldObj.isBlockIndirectlyGettingPowered(getPos()) != 0;
 
         if (!poweredPrev && poweredNow) {
             pendingRequests++;
@@ -362,8 +368,8 @@ public class TileEntityAutoCrafting extends TileEntity implements ISidedInventor
     }
 
     @Override
-    public ItemStack getStackInSlotOnClosing(int slotIndex) {
-        return InventoryUtils.getStackInSlotOnClosing(this, slotIndex);
+	public ItemStack removeStackFromSlot(int index) {
+        return InventoryUtils.getStackInSlotOnClosing(this, index);
     }
 
     @Override
@@ -373,12 +379,12 @@ public class TileEntityAutoCrafting extends TileEntity implements ISidedInventor
     }
 
     @Override
-    public String getInventoryName() {
+    public String getName() {
         return "container.easycrafting:table.auto_crafting";
     }
 
     @Override
-    public boolean hasCustomInventoryName() {
+    public boolean hasCustomName() {
         return false;
     }
 
@@ -389,15 +395,15 @@ public class TileEntityAutoCrafting extends TileEntity implements ISidedInventor
 
     @Override
     public boolean isUseableByPlayer(EntityPlayer player) {
-        return worldObj.getTileEntity(xCoord, yCoord, zCoord) == this && player.getDistanceSq(xCoord + 0.5, yCoord + 0.5, zCoord + 0.5) < 64;
+        return worldObj.getTileEntity(getPos()) == this && getPos().distanceSq(player.getPosition()) < 64;
     }
 
     @Override
-    public void openInventory() {
+	public void openInventory(EntityPlayer player) {
     }
 
     @Override
-    public void closeInventory() {
+	public void closeInventory(EntityPlayer player) {
     }
 
     @Override
@@ -408,12 +414,12 @@ public class TileEntityAutoCrafting extends TileEntity implements ISidedInventor
     /* ISidedInventory */
 
     @Override
-    public int[] getAccessibleSlotsFromSide(int side) {
+	public int[] getSlotsForFace(EnumFacing side) {
         return SLOTS;
     }
 
     @Override
-    public boolean canInsertItem(int slotIndex, ItemStack stack, int side) {
+    public boolean canInsertItem(int slotIndex, ItemStack stack, EnumFacing side) {
         if (inventoryChanged) verifyCraftability();
 
         if (slotIndex < 10 || slotIndex >= 18) return false;  // not valid insert slot
@@ -428,7 +434,7 @@ public class TileEntityAutoCrafting extends TileEntity implements ISidedInventor
     }
 
     @Override
-    public boolean canExtractItem(int slotIndex, ItemStack stack, int side) {
+    public boolean canExtractItem(int slotIndex, ItemStack stack, EnumFacing side) {
         return slotIndex >= 18 && slotIndex < inventory.length;
     }
 
@@ -447,4 +453,22 @@ public class TileEntityAutoCrafting extends TileEntity implements ISidedInventor
         }
         return null;
     }
+
+	@Override
+	public int getField(int id) {
+		return 0;
+	}
+
+	@Override
+	public void setField(int id, int value) {
+	}
+
+	@Override
+	public int getFieldCount() {
+		return 0;
+	}
+
+	@Override
+	public void clear() {
+	}
 }

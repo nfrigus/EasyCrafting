@@ -9,6 +9,8 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.relauncher.Side;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -222,6 +224,9 @@ public class InventoryUtils {
 	}
 
 	public static void dropItems(TileEntity te) {
+		//ugly hack to avoid dropping items incorrectly - TODO trace the 1.7 code to figure out what's different there
+		if(FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
+			return;
 		if (te instanceof IInventory) {
 			dropItems(te, createSlotArray(0, ((IInventory) te).getSizeInventory()));
 		}
@@ -229,13 +234,13 @@ public class InventoryUtils {
 
 	public static void dropItems(TileEntity te, int[] slots) {
 		if (te instanceof IInventory) {
-			double x = te.xCoord + 0.5;
-			double y = te.yCoord + 0.5;
-			double z = te.zCoord + 0.5;
+			double x = te.getPos().getX() + 0.5;
+			double y = te.getPos().getY() + 0.5;
+			double z = te.getPos().getZ() + 0.5;
 			IInventory inv = (IInventory) te;
 
 			for (int slot : slots) {
-				dropItem(te.getWorldObj(), x, y, z, inv.getStackInSlot(slot));
+				dropItem(te.getWorld(), x, y, z, inv.getStackInSlot(slot));
 			}
 		}
 	}

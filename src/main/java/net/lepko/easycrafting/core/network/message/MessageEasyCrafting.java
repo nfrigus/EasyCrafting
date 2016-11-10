@@ -1,6 +1,6 @@
 package net.lepko.easycrafting.core.network.message;
 
-import cpw.mods.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.Side;
 import io.netty.buffer.ByteBuf;
 import net.lepko.easycrafting.Ref;
 import net.lepko.easycrafting.core.config.ConfigHandler;

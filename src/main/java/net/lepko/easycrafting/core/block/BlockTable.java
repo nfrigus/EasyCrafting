@@ -1,7 +1,5 @@
 package net.lepko.easycrafting.core.block;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.lepko.easycrafting.Ref;
 import net.lepko.easycrafting.core.GuiHandler;
 import net.lepko.easycrafting.core.inventory.gui.IGuiTile;
@@ -10,71 +8,33 @@ import net.lepko.easycrafting.core.util.InventoryUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.IIcon;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 import java.util.List;
 
+import javax.annotation.Nullable;
+
 public class BlockTable extends BlockContainer {
 
     public static String[] names = { "easy_crafting", "auto_crafting" };
-    private IIcon[][] icons = new IIcon[2][4];
 
     public BlockTable() {
-        super(Material.wood);
+        super(Material.WOOD);
         setHardness(2.5F);
-        setStepSound(soundTypeWood);
-        setBlockName(Ref.addDomain("table"));
-        setBlockTextureName(Ref.addDomain("table"));
-        setCreativeTab(CreativeTabs.tabDecorations);
+        setUnlocalizedName("table");
+        setCreativeTab(CreativeTabs.DECORATIONS);
     }
-
-    @Override
-    public int damageDropped(int meta) {
-        return meta;
-    }
-
-    @Override
-    @SideOnly(Side.CLIENT)
-    public void registerBlockIcons(IIconRegister iconRegister) {
-        // Easy Crafting Table
-        icons[0][0] = iconRegister.registerIcon(Ref.addDomain("easyCraftingTable_bottom"));
-        icons[0][1] = iconRegister.registerIcon(Ref.addDomain("easyCraftingTable_top"));
-        icons[0][2] = iconRegister.registerIcon(Ref.addDomain("easyCraftingTable_side1"));
-        icons[0][3] = iconRegister.registerIcon(Ref.addDomain("easyCraftingTable_side2"));
-
-        // Auto Crafting Table
-        icons[1][0] = iconRegister.registerIcon(Ref.addDomain("autoCraftingTable_bottom"));
-        icons[1][1] = iconRegister.registerIcon(Ref.addDomain("autoCraftingTable_top"));
-        icons[1][2] = iconRegister.registerIcon(Ref.addDomain("autoCraftingTable_side1"));
-        icons[1][3] = iconRegister.registerIcon(Ref.addDomain("autoCraftingTable_side2"));
-    }
-
-    @Override
-    @SideOnly(Side.CLIENT)
-    public IIcon getIcon(int side, int meta) {
-        if (meta < 0 || meta > icons.length) {
-            meta = 0;
-        }
-        switch (side) {
-            case 0:
-                return icons[meta][0];
-            case 1:
-                return icons[meta][1];
-            case 2:
-            case 3:
-                return icons[meta][2];
-            default:
-                return icons[meta][3];
-        }
-    }
-
+    
     @SuppressWarnings({ "unchecked", "rawtypes" })
     @Override
     public void getSubBlocks(Item item, CreativeTabs tab, List list) {
@@ -84,8 +44,8 @@ public class BlockTable extends BlockContainer {
     }
 
     @Override
-    public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ) {
-        TileEntity te = world.getTileEntity(x, y, z);
+    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, @Nullable ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ) {
+        TileEntity te = world.getTileEntity(pos);
 
         if (te == null || player.isSneaking()) {
             return false;
@@ -96,7 +56,7 @@ public class BlockTable extends BlockContainer {
         }
 
         if (te instanceof IGuiTile) {
-            GuiHandler.openGui(player, world, x, y, z);
+            GuiHandler.openGui(player, world, pos);
             return true;
         }
 
@@ -104,14 +64,14 @@ public class BlockTable extends BlockContainer {
     }
 
     @Override
-    public void breakBlock(World world, int x, int y, int z, Block block, int meta) {
-        TileEntity te = world.getTileEntity(x, y, z);
+    public void onBlockHarvested(World world, BlockPos pos, IBlockState state, EntityPlayer player) {
+        TileEntity te = world.getTileEntity(pos);
         if (te instanceof TileEntityAutoCrafting) {
-            InventoryUtils.dropItems(world.getTileEntity(x, y, z), ((TileEntityAutoCrafting) te).SLOTS);
+            InventoryUtils.dropItems(world.getTileEntity(pos), ((TileEntityAutoCrafting) te).SLOTS);
         } else {
-            InventoryUtils.dropItems(world.getTileEntity(x, y, z));
+            InventoryUtils.dropItems(world.getTileEntity(pos));
         }
-        super.breakBlock(world, x, y, z, block, meta);
+        super.onBlockHarvested(world, pos, state, player);
     }
 
     @Override

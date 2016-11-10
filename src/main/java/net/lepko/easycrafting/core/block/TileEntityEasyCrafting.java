@@ -41,8 +41,8 @@ public class TileEntityEasyCrafting extends TileEntity implements IInventory, IG
     }
 
     @Override
-    public ItemStack getStackInSlotOnClosing(int slotIndex) {
-        return InventoryUtils.getStackInSlotOnClosing(this, slotIndex);
+	public ItemStack removeStackFromSlot(int index) {
+        return InventoryUtils.getStackInSlotOnClosing(this, index);
     }
 
     @Override
@@ -52,15 +52,7 @@ public class TileEntityEasyCrafting extends TileEntity implements IInventory, IG
 
     @Override
     public boolean isUseableByPlayer(EntityPlayer player) {
-        return worldObj.getTileEntity(xCoord, yCoord, zCoord) == this && player.getDistanceSq(xCoord + 0.5, yCoord + 0.5, zCoord + 0.5) < 64;
-    }
-
-    @Override
-    public void openInventory() {
-    }
-
-    @Override
-    public void closeInventory() {
+        return worldObj.getTileEntity(getPos()) == this && player.getDistanceSq(getPos()) < 64;
     }
 
     @Override
@@ -70,18 +62,19 @@ public class TileEntityEasyCrafting extends TileEntity implements IInventory, IG
     }
 
     @Override
-    public void writeToNBT(NBTTagCompound tagCompound) {
+    public NBTTagCompound writeToNBT(NBTTagCompound tagCompound) {
         super.writeToNBT(tagCompound);
         tagCompound.setTag("Inventory", InventoryUtils.writeStacksToNBT(inventory));
+        return tagCompound;
     }
 
     @Override
-    public String getInventoryName() {
+    public String getName() {
         return "container.easycrafting:table.easy_crafting";
     }
 
     @Override
-    public boolean hasCustomInventoryName() {
+    public boolean hasCustomName() {
         return false;
     }
 
@@ -108,4 +101,30 @@ public class TileEntityEasyCrafting extends TileEntity implements IInventory, IG
         }
         return null;
     }
+
+	@Override
+	public void openInventory(EntityPlayer player) {
+	}
+
+	@Override
+	public void closeInventory(EntityPlayer player) {
+	}
+
+	@Override
+	public int getField(int id) {
+		return 0;
+	}
+
+	@Override
+	public void setField(int id, int value) {
+	}
+
+	@Override
+	public int getFieldCount() {
+		return 0;
+	}
+
+	@Override
+	public void clear() {
+	}
 }

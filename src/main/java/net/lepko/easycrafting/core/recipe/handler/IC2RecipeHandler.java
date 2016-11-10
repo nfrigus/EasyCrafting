@@ -1,6 +1,7 @@
 package net.lepko.easycrafting.core.recipe.handler;
 
-import cpw.mods.fml.common.Loader;
+import net.minecraftforge.fml.common.Loader;
+
 import ic2.api.item.ElectricItem;
 import net.lepko.easycrafting.Ref;
 import net.lepko.easycrafting.core.recipe.WrappedRecipe;

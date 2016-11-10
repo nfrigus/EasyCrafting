@@ -5,6 +5,7 @@ import net.lepko.easycrafting.core.inventory.slot.SlotEasyCraftingOutput;
 import net.lepko.easycrafting.core.inventory.slot.SlotInterceptor;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
@@ -83,12 +84,12 @@ public class ContainerEasyCrafting extends Container {
     }
 
     @Override
-    public ItemStack slotClick(int slot_index, int mouse_button, int modifier, EntityPlayer player) {
+    public ItemStack slotClick(int slot_index, int dragType, ClickType clickTypeIn, EntityPlayer player) {
         if (slot_index >= 0 && inventorySlots.get(slot_index) instanceof SlotInterceptor) {
             if (!((Slot) inventorySlots.get(slot_index)).getHasStack() && player.inventory.getItemStack() == null) {
                 return null;
             }
         }
-        return super.slotClick(slot_index, mouse_button, modifier, player);
+        return super.slotClick(slot_index, dragType, clickTypeIn, player);
     }
 }

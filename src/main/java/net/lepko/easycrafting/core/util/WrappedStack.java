@@ -47,7 +47,7 @@ public class WrappedStack {
             result = prime * result + Item.getIdFromItem(stack.getItem());
             result = prime * result + StackUtils.rawDamage(stack);
             result = prime * result + stack.stackSize;
-            result = prime * result + (stack.stackTagCompound == null ? 0 : stack.stackTagCompound.hashCode());
+            result = prime * result + (stack.getTagCompound() == null ? 0 : stack.getTagCompound().hashCode());
         }
         return result;
     }

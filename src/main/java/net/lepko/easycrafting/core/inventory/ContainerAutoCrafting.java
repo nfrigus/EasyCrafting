@@ -6,12 +6,12 @@ import net.lepko.easycrafting.core.inventory.slot.SlotDummyResult;
 import net.lepko.easycrafting.core.inventory.slot.SlotOutput;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.Container;
-import net.minecraft.inventory.ICrafting;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ContainerAutoCrafting extends Container {
 
@@ -63,11 +63,11 @@ public class ContainerAutoCrafting extends Container {
     public boolean canInteractWith(EntityPlayer player) {
         return tileEntity.isUseableByPlayer(player);
     }
-
+    
     @Override
-    public ItemStack slotClick(int slotIndex, int button, int modifier, EntityPlayer player) {
+    public ItemStack slotClick(int slotIndex, int button, ClickType modifier, EntityPlayer player){
         if (slotIndex >= 0 && slotIndex < inventorySlots.size() && getSlot(slotIndex) instanceof SlotDummy) {
-            ((SlotDummy) getSlot(slotIndex)).clickSlot(button, modifier, player.inventory.getItemStack());
+            ((SlotDummy) getSlot(slotIndex)).clickSlot(button, modifier.ordinal(), player.inventory.getItemStack());
             tileEntity.scheduledRecipeCheck = true;
             return null;
         }
@@ -101,14 +101,18 @@ public class ContainerAutoCrafting extends Container {
         return stack;
     }
 
+    /* Hope this doesn't do anything important
     @Override
     public void addCraftingToCrafters(ICrafting player) {
         super.addCraftingToCrafters(player);
 
         player.sendProgressBarUpdate(this, 0, tileEntity.getMode().ordinal());
     }
+    */
 
     private int oldMode = -1;
+
+    /* I think we can leave this out - let people stay in their old tab?
 
     @Override
     public void detectAndSendChanges() {
@@ -122,6 +126,7 @@ public class ContainerAutoCrafting extends Container {
 
         oldMode = tileEntity.getMode().ordinal();
     }
+    */
 
     @Override
     @SideOnly(Side.CLIENT)

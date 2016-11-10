@@ -1,10 +1,10 @@
 package net.lepko.easycrafting.core.inventory.gui;
 
-import codechicken.nei.guihook.IContainerTooltipHandler;
 
 import com.google.common.collect.ImmutableList;
 
-import cpw.mods.fml.common.Optional;
+import codechicken.nei.guihook.IContainerTooltipHandler;
+
 import net.lepko.easycrafting.Ref;
 import net.lepko.easycrafting.core.block.ModBlocks;
 import net.lepko.easycrafting.core.block.TileEntityEasyCrafting;
@@ -27,11 +27,13 @@ import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.init.Items;
+import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.oredict.OreDictionary;
 
 import org.lwjgl.input.Keyboard;
@@ -39,11 +41,11 @@ import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-@Optional.Interface(iface = "codechicken.nei.guihook.IContainerTooltipHandler", modid = "NotEnoughItems")
 public class GuiEasyCrafting extends GuiTabbed implements IContainerTooltipHandler {
 
 	private class TabEasyCrafting extends Tab {
@@ -84,7 +86,7 @@ public class GuiEasyCrafting extends GuiTabbed implements IContainerTooltipHandl
 	public void initGui() {
 		super.initGui();
 		Keyboard.enableRepeatEvents(true);
-		searchField = new GuiTextField(fontRendererObj, guiLeft + 82, guiTop + 6, 89, fontRendererObj.FONT_HEIGHT);
+		searchField = new GuiTextField(0/**/, fontRendererObj, guiLeft + 82, guiTop + 6, 89, fontRendererObj.FONT_HEIGHT);
 		searchField.setMaxStringLength(32);
 		searchField.setEnableBackgroundDrawing(false);
 		searchField.setVisible(true);
@@ -97,7 +99,7 @@ public class GuiEasyCrafting extends GuiTabbed implements IContainerTooltipHandl
 	@Override
 	public void initTabs() {
 		tabGroup.addTab(new TabEasyCrafting(new ItemStack(ModBlocks.table), "Available"));
-		tabGroup.addTab(new TabEasyCrafting(new ItemStack(Items.compass), "Search"));
+		tabGroup.addTab(new TabEasyCrafting(new ItemStack(Items.COMPASS), "Search"));
 	}
 
 	@Override
@@ -179,7 +181,7 @@ public class GuiEasyCrafting extends GuiTabbed implements IContainerTooltipHandl
 	}
 
 	@Override
-	protected void keyTyped(char par1, int par2) {
+	protected void keyTyped(char par1, int par2) throws IOException {
 		if (!checkHotbarKeys(par2)) {
 			if (searchField.textboxKeyTyped(par1, par2)) {
 				updateSearch(true);
@@ -190,7 +192,7 @@ public class GuiEasyCrafting extends GuiTabbed implements IContainerTooltipHandl
 	}
 
 	@Override
-	public void handleMouseInput() {
+	public void handleMouseInput() throws IOException {
 		int mouseScroll = Mouse.getEventDWheel();
 		if (mouseScroll == 0) { // Bypass NEI fast transfer manager
 			super.handleMouseInput();
@@ -215,7 +217,7 @@ public class GuiEasyCrafting extends GuiTabbed implements IContainerTooltipHandl
 	// 5 -> dragged stack
 	// 6 -> double click
 	@Override
-	protected void handleMouseClick(Slot slot, int slotIndex, int button, int action) {
+	protected void handleMouseClick(Slot slot, int slotIndex, int button, ClickType action) {
 		if (slotIndex >= 0 && slotIndex < 40) {
 			onCraftingSlotClick(slot, slotIndex, button, action);
 		} else {
@@ -223,10 +225,13 @@ public class GuiEasyCrafting extends GuiTabbed implements IContainerTooltipHandl
 		}
 	}
 
-	private void onCraftingSlotClick(Slot slot, int slotIndex, int button, int action) {
+	private void onCraftingSlotClick(Slot slot, int slotIndex, int button, ClickType action) {
 		Ref.LOGGER.trace("Clicked: " + slot.getClass().getSimpleName() + "@" + slotIndex + ", button=" + button + ", action=" + action + ", stack=" + slot.getStack());
 
-		if (action > 1 || button > 1 || !slot.getHasStack()) {
+		if (
+				( !action.equals(ClickType.PICKUP)  && !action.equals(ClickType.QUICK_MOVE))
+				
+						|| button > 1 || !slot.getHasStack()) {
 			return;
 		}
 
@@ -257,7 +262,7 @@ public class GuiEasyCrafting extends GuiTabbed implements IContainerTooltipHandl
 
 		if (finalStackSize > 0) {
 			boolean isRightClick = button == 1;
-			boolean isShiftClick = action == 1;
+			boolean isShiftClick = action == ClickType.QUICK_MOVE;
 
 			PacketHandler.INSTANCE.sendToServer(new MessageEasyCrafting(recipe, isRightClick, isShiftClick));
 
@@ -409,7 +414,7 @@ public class GuiEasyCrafting extends GuiTabbed implements IContainerTooltipHandl
 			for (int j = 0; j < 40; j++) {
 				Slot slot = inventorySlots.getSlot(j);
 				//isPointInRegion
-				if (func_146978_c(slot.xDisplayPosition, slot.yDisplayPosition, 16, 16, mouseX, mouseY)) {
+				if (isPointInRegion(slot.xDisplayPosition, slot.yDisplayPosition, 16, 16, mouseX, mouseY)) {
 					FontRenderer font = stack.getItem().getFontRenderer(stack);
 					String itemName = currentTip.get(0);
 					List<String> list = ImmutableList.of(stack.getRarity().rarityColor + itemName);
@@ -532,10 +537,9 @@ public class GuiEasyCrafting extends GuiTabbed implements IContainerTooltipHandl
 			}
 		}
 
-		//
 		if (is != null) {
-			itemRender.renderItemAndEffectIntoGUI(fontRendererObj, mc.renderEngine, is, xPos, yPos);
-			itemRender.renderItemOverlayIntoGUI(fontRendererObj, mc.renderEngine, is, xPos, yPos);
+			itemRender.renderItemAndEffectIntoGUI(is, xPos, yPos);
+			itemRender.renderItemOverlayIntoGUI(fontRendererObj, is, xPos, yPos, TextFormatting.YELLOW+""+is.stackSize);
 		} else {
 			Ref.LOGGER.warn("Error rendering stack in recipe tooltip: is == null");
 		}

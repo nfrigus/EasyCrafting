@@ -1,16 +1,16 @@
-[{
-    "modid": "EasyCrafting",
-    "name": "Easy Crafting",
-    "description": "Easily craft items that you have the materials for with just a click of a button!",
-    "version": "${version}",
-    "mcversion": "${mcversion}",
-    "url": "http://mods.lepko.net/",
-    "updateUrl": "",
-    "authorList": [ "Lepko" ],
-    "credits": "Created by Lepko. Idea based on mods by ljdp and Zeldo.",
-    "parent": "",
-    "logoFile": "",
-    "screenshots": [],
-    "dependencies": []
-}]
-
+[
+{
+  "modid": "planetguy_gemmagic",
+  "name": "Gem Magic",
+  "description": "Create magic items to your own specifications",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "url": "",
+  "updateUrl": "",
+  "authorList": ["planetguy"],
+  "credits": "Heavily inspired by the excellent game SpaceChem by Zachtronics",
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": []
+}
+]

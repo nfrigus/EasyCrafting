@@ -1,9 +1,11 @@
 package net.lepko.easycrafting.core.inventory.gui;
 
+import java.io.IOException;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.client.renderer.entity.RenderItem;
+import net.minecraft.client.renderer.RenderItem;
 import net.minecraft.inventory.Container;
 
 public abstract class GuiTabbed extends GuiContainer {
@@ -42,7 +44,7 @@ public abstract class GuiTabbed extends GuiContainer {
     }
 
     @Override
-    protected void mouseClicked(int mouseX, int mouseY, int button) {
+    protected void mouseClicked(int mouseX, int mouseY, int button) throws IOException {
         if (!tabGroup.mouseClick(mouseX, mouseY)) {
             super.mouseClicked(mouseX, mouseY, button);
         }

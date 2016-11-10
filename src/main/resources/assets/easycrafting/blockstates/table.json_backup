@@ -1,0 +1,19 @@
+{
+    "forge_marker": 1,
+    "defaults": {
+        "textures": {
+            "all": "easycrafting:blocks/easytop"
+        },
+        "model": "cube_all",
+        "uvlock": true
+    },
+    "variants": {
+    "normal": [{
+        "textures": {
+            "side": "easycrafting:blocks/easyt",po
+            "end": "easycrafting:blocks/easytop"
+        },
+        "model": "cube_column"
+    }]
+    }
+}

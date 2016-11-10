@@ -14,17 +14,7 @@ import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.ShapedRecipes;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.EntityClientPlayerMP;
 import net.minecraft.client.gui.inventory.GuiContainer;
-
-
-
-
-
-
-
-
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -98,7 +88,7 @@ public class RecipeManager {
 						addItem(wr, ((ItemStack) o).getItem(), consumers);
 					}
 					else if(o instanceof List){
-						ArrayList<ItemStack> ar = (ArrayList<ItemStack>)o;
+						List<ItemStack> ar = (List<ItemStack>)o;
 						for (ItemStack is : ar)
 						{
 							addItem(wr, is.getItem(), consumers);

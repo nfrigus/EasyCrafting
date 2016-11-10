@@ -9,7 +9,7 @@ public class Tab {
     public final int height = 28;
     public int index = 0;
     public TabGroup group;
-    public ItemStack iconStack = new ItemStack(Blocks.stone);
+    public ItemStack iconStack = new ItemStack(Blocks.STONE);
     public String tooltip = "tab";
 
     public Tab(ItemStack iconStack, String tooltip) {
@@ -37,7 +37,7 @@ public class Tab {
         if (group.gui.currentTab == index) {
             x -= 2;
         }
-        group.gui.itemRenderer().renderItemAndEffectIntoGUI(group.gui.mc().fontRenderer, group.gui.mc().renderEngine, iconStack, x, y);
+        group.gui.itemRenderer().renderItemAndEffectIntoGUI(iconStack, x, y);
     }
 
     public boolean mouseClick(int mouseX, int mouseY) {

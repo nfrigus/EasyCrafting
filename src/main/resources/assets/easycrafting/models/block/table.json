@@ -1,0 +1,12 @@
+{
+    "parent": "block/cube",
+    "textures": {
+        "particle": "blocks/easycrafting:blocks/easyCraftingTable_side1",
+        "down": "blocks/planks_oak",
+        "up": "blocks/easycrafting:blocks/easyCraftingTable_top",
+        "north": "blocks/easycrafting:blocks/easyCraftingTable_side1",
+        "east": "blocks/easycrafting:blocks/easyCraftingTable_side2",
+        "south": "blocks/easycrafting:blocks/easyCraftingTable_side1",
+        "west": "blocks/easycrafting:blocks/easyCraftingTable_side2"
+    }
+}

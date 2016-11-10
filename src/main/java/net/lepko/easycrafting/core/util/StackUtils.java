@@ -104,20 +104,20 @@ public class StackUtils {
      * Returns the raw value: stack.itemDamage
      */
     public static int rawDamage(ItemStack stack) {
-        return Items.arrow.getDamage(stack);
+        return Items.ARROW.getDamage(stack);
     }
 
     public static boolean areNBTsEqual(ItemStack first, ItemStack second) {
         if (first == null || second == null) {
             return first == second;
         }
-        if (first.stackTagCompound == null || first.stackTagCompound.hasNoTags()) {
-            return second.stackTagCompound == null || second.stackTagCompound.hasNoTags();
+        if (first.getTagCompound() == null || first.getTagCompound().hasNoTags()) {
+            return second.getTagCompound() == null || second.getTagCompound().hasNoTags();
         }
-        if (second.stackTagCompound == null || second.stackTagCompound.hasNoTags()) {
+        if (second.getTagCompound() == null || second.getTagCompound().hasNoTags()) {
             return false;
         }
-        return first.stackTagCompound.equals(second.stackTagCompound);
+        return first.getTagCompound().equals(second.getTagCompound());
     }
 
     public static String toString(ItemStack stack) {
@@ -125,7 +125,7 @@ public class StackUtils {
             return "ItemStack [null]";
         }
         String name = stack.getItem() == null ? "null" : stack.getItem().getUnlocalizedName(stack);
-        String nbt = stack.stackTagCompound == null ? "null" : stack.stackTagCompound.toString();
+        String nbt = stack.getTagCompound() == null ? "null" : stack.getTagCompound().toString();
         return String.format("ItemStack [item=%s, meta=%d, size=%d, name=%s, nbt=%s]", stack.getItem(), rawDamage(stack), stack.stackSize, name, nbt);
     }
 

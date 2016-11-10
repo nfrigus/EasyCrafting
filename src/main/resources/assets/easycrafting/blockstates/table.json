@@ -1,0 +1,18 @@
+{
+	"forge_marker": 1,
+	"variants": {
+		"inventory": {
+			"model": "hopper_down",
+			"transform": "forge:default-item"
+		},
+		"easy_crafting": {
+			"model": "hopper_down"
+		},
+		"auto_crafting": {
+			"model": "hopper_down"
+		},
+		"normal": {
+			"model": "hopper_down"
+		}
+	}
+}

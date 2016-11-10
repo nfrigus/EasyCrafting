@@ -9,7 +9,9 @@ public class ItemBlockTable extends ItemBlock {
 
     public ItemBlockTable(Block block) {
         super(block);
-        setUnlocalizedName(Ref.addDomain("table"));
+        //Does this need to be in the domain?
+        setUnlocalizedName("table");
+        setRegistryName(block.getRegistryName());
         setHasSubtypes(true);
     }
 
