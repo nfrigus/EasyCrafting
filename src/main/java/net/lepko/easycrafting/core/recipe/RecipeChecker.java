@@ -10,6 +10,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 import net.lepko.easycrafting.Ref;
 import net.lepko.easycrafting.core.config.ConfigHandler;
 import net.lepko.easycrafting.core.inventory.gui.GuiEasyCrafting;
+import net.lepko.easycrafting.core.inventory.gui.IGuiTabbed;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.IInventory;
@@ -45,8 +46,8 @@ public enum RecipeChecker {
 				Ref.LOGGER.info("Worker thread spawned.");
 			}
 			if (!displayed && !requested && done) {
-				if (mc.currentScreen instanceof GuiEasyCrafting) {
-					GuiEasyCrafting gec = (GuiEasyCrafting) mc.currentScreen;
+				if (mc.currentScreen instanceof IGuiTabbed) {
+					IGuiTabbed gec = (IGuiTabbed) mc.currentScreen;
 					gec.refreshCraftingOutput();
 					displayed = true;
 				}

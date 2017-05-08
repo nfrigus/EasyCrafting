@@ -6,23 +6,30 @@ import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.inventory.Container;
 
-public abstract class GuiTabbed extends GuiContainer {
+public abstract class GuiTabbed extends GuiContainer implements IGuiTabbed {
 
     public TabGroup tabGroup = new TabGroup(this);
-    public int currentTab = 0;
+    private int currentTab = 0;
 
     public GuiTabbed(Container container) {
         super(container);
     }
 
+    /* (non-Javadoc)
+	 * @see net.lepko.easycrafting.core.inventory.gui.IGuiTabbed#initGui()
+	 */
     @Override
     public void initGui() {
         super.initGui();
         initTabs();
-        tabGroup.getTab(currentTab).onTabSelected();
+        tabGroup.getTab(getCurrentTab()).onTabSelected();
     }
 
-    public abstract void initTabs();
+    /* (non-Javadoc)
+	 * @see net.lepko.easycrafting.core.inventory.gui.IGuiTabbed#initTabs()
+	 */
+    @Override
+	public abstract void initTabs();
 
     @Override
     protected void drawGuiContainerBackgroundLayer(float f, int i, int j) {
@@ -49,23 +56,59 @@ public abstract class GuiTabbed extends GuiContainer {
     }
 
     // public accessors
-    public int guiLeft() {
+    /* (non-Javadoc)
+	 * @see net.lepko.easycrafting.core.inventory.gui.IGuiTabbed#guiLeft()
+	 */
+    @Override
+	public int guiLeft() {
         return guiLeft;
     }
 
-    public int guiTop() {
+    /* (non-Javadoc)
+	 * @see net.lepko.easycrafting.core.inventory.gui.IGuiTabbed#guiTop()
+	 */
+    @Override
+	public int guiTop() {
         return guiTop;
     }
 
-    public void drawRectangle(int x, int y, int texLeft, int texTop, int width, int height) {
+    /* (non-Javadoc)
+	 * @see net.lepko.easycrafting.core.inventory.gui.IGuiTabbed#drawRectangle(int, int, int, int, int, int)
+	 */
+    @Override
+	public void drawRectangle(int x, int y, int texLeft, int texTop, int width, int height) {
         drawTexturedModalRect(x, y, texLeft, texTop, width, height);
     }
 
-    public RenderItem itemRenderer() {
+    /* (non-Javadoc)
+	 * @see net.lepko.easycrafting.core.inventory.gui.IGuiTabbed#itemRenderer()
+	 */
+    @Override
+	public RenderItem itemRenderer() {
         return itemRender;
     }
 
-    public Minecraft mc() {
+    /* (non-Javadoc)
+	 * @see net.lepko.easycrafting.core.inventory.gui.IGuiTabbed#mc()
+	 */
+    @Override
+	public Minecraft mc() {
         return mc;
     }
+
+	/* (non-Javadoc)
+	 * @see net.lepko.easycrafting.core.inventory.gui.IGuiTabbed#getCurrentTab()
+	 */
+	@Override
+	public int getCurrentTab() {
+		return currentTab;
+	}
+
+	/* (non-Javadoc)
+	 * @see net.lepko.easycrafting.core.inventory.gui.IGuiTabbed#setCurrentTab(int)
+	 */
+	@Override
+	public void setCurrentTab(int currentTab) {
+		this.currentTab = currentTab;
+	}
 }

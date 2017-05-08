@@ -2,6 +2,7 @@ package net.lepko.easycrafting.core.network.message;
 
 import cpw.mods.fml.relauncher.Side;
 import io.netty.buffer.ByteBuf;
+import me.planetguy.lib.util.Debug;
 import net.lepko.easycrafting.Ref;
 import net.lepko.easycrafting.core.config.ConfigHandler;
 import net.lepko.easycrafting.core.recipe.RecipeHelper;
@@ -90,7 +91,7 @@ public class MessageEasyCrafting extends AbstractMessage {
 
 	@Override
 	public void run(EntityPlayer player, Side side) {
-		Ref.LOGGER.trace("Message: " + this.getClass().getName() + " Side: " + side);
+		Debug.dbg("Message: " + this.getClass().getName() + " Side: " + side);
 
 		WrappedRecipe recipe = RecipeHelper.getValidRecipe(result, ingredients);
 		if (recipe == null) {

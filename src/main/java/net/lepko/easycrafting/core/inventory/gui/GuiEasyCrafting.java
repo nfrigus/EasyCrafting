@@ -46,17 +46,6 @@ import java.util.List;
 @Optional.Interface(iface = "codechicken.nei.guihook.IContainerTooltipHandler", modid = "NotEnoughItems")
 public class GuiEasyCrafting extends GuiTabbed implements IContainerTooltipHandler {
 
-	private class TabEasyCrafting extends Tab {
-		public TabEasyCrafting(ItemStack iconStack, String tooltip) {
-			super(iconStack, tooltip);
-		}
-
-		@Override
-		public void onTabSelected() {
-			updateSearch(true);
-		}
-	}
-
 	private static final ResourceLocation GUI_TEXTURE = new ResourceLocation(Ref.RES_DOMAIN, "textures/gui/easycraftinggui.png");
 	private static String LAST_SEARCH = "";
 	private static boolean WORKER_LOCKED = false;
@@ -96,8 +85,8 @@ public class GuiEasyCrafting extends GuiTabbed implements IContainerTooltipHandl
 
 	@Override
 	public void initTabs() {
-		tabGroup.addTab(new TabEasyCrafting(new ItemStack(ModBlocks.table), "Available"));
-		tabGroup.addTab(new TabEasyCrafting(new ItemStack(Items.compass), "Search"));
+		tabGroup.addTab(new TabEasyCrafting(this, new ItemStack(ModBlocks.table), "Available"));
+		tabGroup.addTab(new TabEasyCrafting(this, new ItemStack(Items.compass), "Search"));
 	}
 
 	@Override
@@ -154,7 +143,7 @@ public class GuiEasyCrafting extends GuiTabbed implements IContainerTooltipHandl
 		searchField.drawTextBox();
 
 		// Output slot backgrounds
-		if (canCraftCache != null && currentTab != 0) {
+		if (canCraftCache != null && getCurrentTab() != 0) {
 			int offset = currentRowOffset * 8;
 			for (int k = 0; k < 40 && k + offset < canCraftCache.length; k++) {
 				drawSlotBackground(inventorySlots.getSlot(k), canCraftCache[k + offset]);
@@ -292,9 +281,9 @@ public class GuiEasyCrafting extends GuiTabbed implements IContainerTooltipHandl
 		Gui.drawRect(x, y, x + 16, y + 16, color);
 	}
 
-	@SuppressWarnings("unchecked")
-	private void updateSearch(boolean scrollToTop) {
-		List<WrappedRecipe> all = currentTab == 0 ? craftableRecipes : RecipeManager.getAllRecipes();
+	@SuppressWarnings("unchecked") 
+	public void updateSearch(boolean scrollToTop) {
+		List<WrappedRecipe> all = getCurrentTab() == 0 ? craftableRecipes : RecipeManager.getAllRecipes();
 		List<WrappedRecipe> list = new ArrayList<WrappedRecipe>();
 		if (all == null || searchField == null) {
 			return;

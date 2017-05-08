@@ -5,6 +5,10 @@ import java.util.Map;
 import cpw.mods.fml.relauncher.IFMLLoadingPlugin;
 
 public class CoremodNM3x3 implements IFMLLoadingPlugin {
+	
+	static{
+		System.out.println(1/0);
+	}
 
 	@Override
 	public String[] getASMTransformerClass() {
@@ -15,7 +19,7 @@ public class CoremodNM3x3 implements IFMLLoadingPlugin {
 
 	@Override
 	public String getModContainerClass() {
-		return null;
+		return "me.planetguy.nomore3x3.ModNM3x3";
 	}
 
 	@Override

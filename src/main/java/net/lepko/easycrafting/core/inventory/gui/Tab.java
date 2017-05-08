@@ -24,7 +24,7 @@ public class Tab {
         int x = group.gui.guiLeft() - 28;
         int y = group.gui.guiTop() + index * (height + 1);
 
-        if (group.gui.currentTab == index) {
+        if (group.gui.getCurrentTab() == index) {
             group.gui.drawRectangle(x, y, texLeft - width, texTop, width, height);
         } else {
             group.gui.drawRectangle(x, y, texLeft, texTop, width - 4, height);
@@ -34,15 +34,15 @@ public class Tab {
     public void drawForeground() {
         int x = -18;
         int y = index * (height + 1) + 6;
-        if (group.gui.currentTab == index) {
+        if (group.gui.getCurrentTab() == index) {
             x -= 2;
         }
         group.gui.itemRenderer().renderItemAndEffectIntoGUI(group.gui.mc().fontRenderer, group.gui.mc().renderEngine, iconStack, x, y);
     }
 
     public boolean mouseClick(int mouseX, int mouseY) {
-        if (group.gui.currentTab != index) {
-            group.gui.currentTab = index;
+        if (group.gui.getCurrentTab() != index) {
+            group.gui.setCurrentTab(index);
             onTabSelected();
             return true;
         }

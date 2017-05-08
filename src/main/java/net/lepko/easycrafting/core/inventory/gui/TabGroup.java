@@ -8,16 +8,16 @@ import org.lwjgl.opengl.GL12;
 
 public class TabGroup {
 
-    public final GuiTabbed gui;
+    public final IGuiTabbed gui;
     public final boolean leftSide;
     private final List<Tab> tabs = new ArrayList<Tab>();
 
-    public TabGroup(GuiTabbed gui) {
+    public TabGroup(IGuiTabbed gui) {
         this.gui = gui;
         leftSide = true;
     }
 
-    public TabGroup(GuiTabbed gui, boolean leftSide) {
+    public TabGroup(IGuiTabbed gui, boolean leftSide) {
         this.gui = gui;
         this.leftSide = leftSide;
     }
